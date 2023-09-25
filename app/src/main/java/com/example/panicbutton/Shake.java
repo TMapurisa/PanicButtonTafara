@@ -9,10 +9,6 @@ import android.hardware.SensorManager;
 import android.os.Handler;
 import android.widget.Toast;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-
-import java.util.Timer;
-
 public class Shake implements SensorEventListener {
 
     private Context context;
@@ -24,7 +20,6 @@ public class Shake implements SensorEventListener {
     private long lastShakeTime = 0;
     private Handler handler;
     private Runnable runnable;
-
 
     public Shake(Context context) {
         this.context = context;
@@ -94,7 +89,6 @@ public class Shake implements SensorEventListener {
         // Check if we have three distinct up-and-down movements
         if (shakeCount == 3) {
             showToast("Shake detected. SOS message will be sent.");
-
             handler.removeCallbacks(runnable);
             handler.postDelayed(runnable, 3000); // Delay for 3 seconds before deactivating shake feature
             shakeCount = 0;
@@ -106,19 +100,10 @@ public class Shake implements SensorEventListener {
         handler.postDelayed(runnable, 3000); // Delay for 3 seconds before deactivating shake feature
     }
 
-
-
-
-
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // Not used in this example
     }
-
-    //{
-
-    // }
-
     //TODO: rerwite the code with the implementation of sending a message here its an active toast.
 }
 

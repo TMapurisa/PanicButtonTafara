@@ -25,9 +25,6 @@ public class DashboardFragment extends Fragment implements SensorEventListener {
 
     private Button btnwlkthme;
     private Shake shake;
-    private Intent serviceIntent;
-
-
     private Button btnShake;
     private Button btnGeo;
     private Button btnOther;
@@ -41,8 +38,8 @@ public class DashboardFragment extends Fragment implements SensorEventListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_dashboard, container, false);
-        serviceIntent = new Intent(getActivity(), MyBackgroundServices.class);
-        getActivity().startService(serviceIntent);
+
+
         btnwlkthme = rootView.findViewById(R.id.btnWalkwithme);
         btnGeo = rootView.findViewById(R.id.btnGeo);
         btnShake = rootView.findViewById(R.id.btnShake);
@@ -111,6 +108,21 @@ public class DashboardFragment extends Fragment implements SensorEventListener {
         return rootView;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Register the Shake class as a SensorEventListener when the fragment is resumed
+
+        shake.registerListener();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        // Unregister the Shake class as a SensorEventListener when the fragment is paused
+        shake.unregisterListener();
+    }
+
 
 
     @Override
@@ -122,18 +134,6 @@ public class DashboardFragment extends Fragment implements SensorEventListener {
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // Not used in this example
     }
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-
-        // Stop the background service
-        getActivity().stopService(serviceIntent);
-    }
 
 
 }
-
-
-//        return inflater.inflate(R.layout.fragment_dashboard, container, false);
-//    }
-//}

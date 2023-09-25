@@ -1,10 +1,13 @@
 package com.example.panicbutton;
 
+import SafetyTips.TipsNotifications;
 import contact.*;
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.hardware.Sensor;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,13 +20,16 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.Timer;
 
@@ -39,11 +45,15 @@ public class HomeFragment extends Fragment {
     private Handler handler = new Handler(Looper.getMainLooper());
     public DBhelper dbh ;
 
+    //new
+    private TipsNotifications tipsNotifications = new TipsNotifications();
+
 
 
 
     // }
     private Button panicbtn;
+    private Button Deact;
     private TextView panictext;
     private int btn_press = 0;
 
@@ -51,10 +61,23 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+
+        tipsNotifications.startUse(getContext());
+        // Start the service
         panicbtn = rootView.findViewById(R.id.show_text_button);
         panictext = rootView.findViewById(R.id.hidden_text);
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        Deact = rootView.findViewById(R.id.BtnNotification);
+        Deact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tipsNotifications.stop();
+                Deact.setVisibility(View.INVISIBLE);
+
+            }
+        });
+
 
 
         panicbtn.setOnClickListener(new View.OnClickListener() {
@@ -64,6 +87,8 @@ public class HomeFragment extends Fragment {
                     panicbtn.setText("Stop");
                     if (!isPanicActive) {
                         showConfirmationDialog();
+                        panictext.setText("SOS MESSAGE SENT");
+                        panictext.setVisibility(View.VISIBLE);
                     } else {
                         stopPanic();
                     }
@@ -72,9 +97,10 @@ public class HomeFragment extends Fragment {
 
                 } else {
                     panictext.setVisibility(View.INVISIBLE);
-                    stopPanic();
+
                     panicbtn.setText("PANIC");
                     btn_press++;
+                    stopPanic();
                 }
 
             }
@@ -113,12 +139,13 @@ public class HomeFragment extends Fragment {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                sendSOSMessage();
-                handler.postDelayed(this, SOS_INTERVAL);
+                if (isPanicActive) {
+                    sendSOSMessage();
+                    handler.postDelayed(this, SOS_INTERVAL);
+                }
             }
         }, 0); // Start immediately
     }
-
 
     private void sendSOSMessage() {
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
@@ -211,6 +238,7 @@ public class HomeFragment extends Fragment {
     private void showToast(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
+
 
 
 

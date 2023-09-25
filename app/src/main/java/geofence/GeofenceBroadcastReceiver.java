@@ -39,18 +39,17 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
 
         switch (transitionType) {
             case Geofence.GEOFENCE_TRANSITION_ENTER:
-                Toast.makeText(context, "GEOFENCE_TRANSITION_ENTER", Toast.LENGTH_SHORT).show();
-                notificationHelper.sendHighPriorityNotification("GEOFENCE_TRANSITION_ENTER", "", MapsActivity.class);
+                Toast.makeText(context, "Entered a Dangerous Place", Toast.LENGTH_SHORT).show();
+                notificationHelper.sendHighPriorityNotification("Entered a dangerous zone, be cautious or leave", "", MapsActivity.class);
                 break;
             case Geofence.GEOFENCE_TRANSITION_DWELL:
-                Toast.makeText(context, "GEOFENCE_TRANSITION_DWELL", Toast.LENGTH_SHORT).show();
-                notificationHelper.sendHighPriorityNotification("GEOFENCE_TRANSITION_DWELL", "", MapsActivity.class);
+                Toast.makeText(context, "In a dangerous Zone", Toast.LENGTH_SHORT).show();
+                notificationHelper.sendHighPriorityNotification("In a dangerous Zone", "", MapsActivity.class);
                 break;
             case Geofence.GEOFENCE_TRANSITION_EXIT:
-                Toast.makeText(context, "GEOFENCE_TRANSITION_EXIT", Toast.LENGTH_SHORT).show();
-                notificationHelper.sendHighPriorityNotification("GEOFENCE_TRANSITION_EXIT", "", MapsActivity.class);
+                Toast.makeText(context, "EXITED A DANGEROUS ZONE", Toast.LENGTH_SHORT).show();
+                notificationHelper.sendHighPriorityNotification("CHECK YOUR BELONGINGS YOU JUST LEFT A DANGEROUS ZONE ", "", MapsActivity.class);
                 break;
         }
-
     }
 }
